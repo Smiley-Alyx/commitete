@@ -12,13 +12,10 @@ use kartik\date\DatePicker;
 
 <div class="reception-search form-group">
 
-    <?php 
-        $form = ActiveForm::begin([
-            'action' => ['index'],
-            'method' => 'get',
-        ]);
-        $value = Yii::$app->request->get('ReceptionSearch')['date'] ? Yii::$app->request->get('ReceptionSearch')['date'] : date('Y-m-d');
-    ?>
+    <?php $form = ActiveForm::begin([
+        'action' => ['index'],
+        'method' => 'get',
+    ]); ?>
 
     <?php //echo $form->field($model, 'id') ?>
 
@@ -32,10 +29,10 @@ use kartik\date\DatePicker;
             'name' => 'ReceptionSearch[date]',
             'value' => Yii::$app->request->get('ReceptionSearch')['date'],
             'pluginOptions' => [
-                'format' => 'dd-mm-yyyy',
+                'format' => 'yyyy-m-d',
                 'startDate' => '2018-11-01',
                 'todayHighlight' => true,
-                'autoclose' => true,
+                'autoclose'=>true,
                 'daysOfWeekDisabled' => [0, 1, 3, 5, 6],
             ]
         ]); ?>
@@ -47,9 +44,9 @@ use kartik\date\DatePicker;
 
     <?php //echo $form->field($model, 'userNameReal') ?>
 
-    <div class="form-group" style="display: flex;">
-        <?= Html::submitButton('Открыть', ['class' => 'btn btn-primary', 'style' => 'margin-right: 10px;']) ?>
-        <?= Html::a('Все записи', ['index?ReceptionSearch[date]='], ['class'=>'btn btn-default']) ?>
+    <div class="form-group">
+        <?= Html::submitButton('Открыть', ['class' => 'btn btn-primary']) ?>
+        <a href="<?=Url::to(['index?ReceptionSearch[date]='])?>" class="btn btn-default">Все записи</a>
     </div>
 
     <?php ActiveForm::end(); ?>

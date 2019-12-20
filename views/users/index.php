@@ -2,7 +2,6 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
-use \yii\widgets\MaskedInput;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\UsersSearch */
@@ -25,14 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'first_name',
             'middle_name',
             'last_name',
-            [
-                'attribute' => 'phone',
-                'filter' => MaskedInput::widget([
-                    'model' => $searchModel,
-                    'attribute' => 'phone',
-                    'mask' => '+7 (999) 999 99 99',
-                ]),
-            ],
+            'phone',
             'email:email',
 
             ['class' => 'yii\grid\ActionColumn',

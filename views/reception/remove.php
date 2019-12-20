@@ -4,13 +4,11 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
 use kartik\date\DatePicker;
-use yii\validators\Validator;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Удаление даты';
+$this->title = 'Удаление записей';
 $this->params['breadcrumbs'][] = ['label' => 'Список записей', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => 'Управление датами', 'url' => ['/reception/management']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="reception-time">
@@ -25,7 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'options' => ['placeholder' => 'Выберете необходимую дату'],
                 'name' => 'Reception[datePlan]',
                 'pluginOptions' => [
-                    'format' => 'dd-mm-yyyy',
+                    'format' => 'yyyy-m-d',
                     'startDate' => date("Y-m-d"),
                     'todayHighlight' => true,
                     'autoclose'=>true,
@@ -51,26 +49,12 @@ $this->params['breadcrumbs'][] = $this->title;
     </div> 	
 	<div class="container">
 		<?= Html::submitButton('Удалить', 
-            [
-                'class' => 'btn btn-danger',
-                'id' => 'submit_btn',
-                'data' => [
-                    'confirm' => 'В удаляемой дате могут быть записи! Вы уверены что хотите удалить???'
-                ],
-                'disabled' => 'disabled',
-            ]); 
-        ?>
+        [
+            'class' => 'btn btn-danger'
+        ]); ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>
 
 </div>
-
-<script type="text/javascript">
-    jQuery(document).ready(function(){
-        $('#w1').on('change', function(){
-            $('#submit_btn').removeAttr("disabled");
-        });
-    });
-</script>
 
