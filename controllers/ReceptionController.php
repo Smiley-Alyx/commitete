@@ -5,9 +5,12 @@ namespace app\controllers;
 use Yii;
 use app\models\Reception;
 use app\models\ReceptionSearch;
+use app\models\Time;
+use app\controllers\UsersController;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\Request;
 
 /**
  * ReceptionController implements the CRUD actions for Reception model.
@@ -104,9 +107,31 @@ class ReceptionController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
-
+        //$this->findModel($id)->delete();
+        Yii::$app->db->createCommand(
+            'UPDATE `reception` SET `status_id` = :statusId, `user_id` = :userId WHERE `id` = :Id', 
+            ['statusId' => 1, ':userId' => '', ':Id' => $id])->execute();
+        //UsersController::actionDelete($id);
+        //Ебануть удаление пользователя из БД
         return $this->redirect(['index']);
+    }
+
+    /**
+     * Select all time.
+     * @return mixed
+     */
+    public function actionTime()
+    {
+        $model = new Reception();
+        $time = new Time();
+        $countTime = Time::find()->count();
+        if ($model->load(Yii::$app->request->post())) {
+            $operatorPlan = Yii::$app->request->post('Reception')['operatorPlan'];
+            $datePlan = Yii::$app->request->post('Reception')['datePlan'];
+            $model->saveTime($operatorPlan, $datePlan, $countTime);
+            return $this->redirect(['index']);
+        }     
+        return $this->render('time', ['model' => $model]);
     }
 
     /**
