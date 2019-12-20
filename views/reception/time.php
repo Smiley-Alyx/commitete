@@ -7,8 +7,9 @@ use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Планирование времени';
+$this->title = 'Планирование даты';
 $this->params['breadcrumbs'][] = ['label' => 'Список записей', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Управление датами', 'url' => ['/reception/management']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="reception-time">
@@ -24,8 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'options' => ['placeholder' => 'Выберете необходимую дату'],
                 'name' => 'Reception[datePlan]',
                 'pluginOptions' => [
-                    'format' => 'yyyy-m-d',
-                    'startDate' => date("Y-m-d"),
+                    'format' => 'dd-mm-yyyy',
                     'todayHighlight' => true,
                     'autoclose'=>true,
                     'daysOfWeekDisabled' => [0, 1, 3, 5, 6],
@@ -48,10 +48,23 @@ $this->params['breadcrumbs'][] = $this->title;
     	</div>
     </div> 	
 	<div class="container">
-		<?= Html::submitButton('Запланировать', ['class' => 'btn btn-primary']); ?>
+		<?= Html::submitButton('Запланировать', 
+            [
+                'class' => 'btn btn-primary',
+                'id' => 'disbut',                
+                'disabled' => 'disabled',
+            ]); 
+        ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>
 
 </div>
 
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        $('#w1').on('change', function(){
+            $('#disbut').removeAttr("disabled");
+        });
+    });
+</script>

@@ -4,11 +4,13 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\widgets\ActiveField;
 use kartik\date\DatePicker;
+use yii\validators\Validator;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Удаление записей';
+$this->title = 'Удаление даты';
 $this->params['breadcrumbs'][] = ['label' => 'Список записей', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Управление датами', 'url' => ['/reception/management']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="reception-time">
@@ -23,8 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'options' => ['placeholder' => 'Выберете необходимую дату'],
                 'name' => 'Reception[datePlan]',
                 'pluginOptions' => [
-                    'format' => 'yyyy-m-d',
-                    'startDate' => date("Y-m-d"),
+                    'format' => 'dd-mm-yyyy',
                     'todayHighlight' => true,
                     'autoclose'=>true,
                     'daysOfWeekDisabled' => [0, 1, 3, 5, 6],
@@ -49,12 +50,31 @@ $this->params['breadcrumbs'][] = $this->title;
     </div> 	
 	<div class="container">
 		<?= Html::submitButton('Удалить', 
-        [
-            'class' => 'btn btn-danger'
-        ]); ?>
+            [
+                'class' => 'btn btn-danger',
+                'id' => 'disbut',
+                'onclick' => 'return confirm("В удаляемой дате могут быть записи! Вы уверены что хотите удалить???")',
+                //'data-confirm' => Yii::t('yii', 'В удаляемой дате могут быть записи! Вы уверены что хотите удалить???'),
+                /*
+                'data' => [
+                    'confirm' => 'В удаляемой дате могут быть записи! Вы уверены что хотите удалить???',
+                    'method' => 'post'
+                ],
+                */
+                'disabled' => 'disabled',
+            ]); 
+        ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>
 
 </div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function(){
+        $('#w1').on('change', function(){
+            $('#disbut').removeAttr("disabled");
+        });
+    });
+</script>
 
