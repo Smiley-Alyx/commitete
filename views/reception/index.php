@@ -12,7 +12,7 @@ $this->title = 'Список записей';
 $this->params['breadcrumbs'][] = $this->title;
 
 $gridColumns = [
-    //['class' => 'yii\grid\SerialColumn'],
+    ['class' => 'kartik\grid\SerialColumn'],
     
     [
         'attribute' => 'id',
@@ -22,20 +22,6 @@ $gridColumns = [
         'attribute' => 'date',
         'format' =>  ['date', 'd.M.Y'],
         'headerOptions' => ['width' => '80'],
-        /*
-        //Доделать фильтрацию по датам
-        //https://github.com/2amigos/yii2-date-picker-widget
-        //https://klisl.com/DateTimePicker.html
-        'filter' => DatePicker::widget([
-            'model' => $searchModel,
-            'attribute' => 'created_at',
-            'language' => 'ru',
-            'clientOptions' => [
-                'autoclose' => true,
-                'format' => 'dd.mm.yyyy',
-            ],
-        ]),
-        */
     ],
     [
         'attribute' => 'timeReal',
@@ -63,23 +49,19 @@ $gridColumns = [
     ],
     [
         'attribute' => 'userNameReal',
+        'format' => 'raw',
         'value' => function ($model) {
             if(isset($model->user)) {
-                return $model->user->last_name;
+                return Html::a($model->user->last_name .' '. $model->user->first_name .' '. $model->user->middle_name,
+                    '/users/view?id='.$model->user->id,
+                    [
+                        'title' => 'Подробнее',
+                        'target' => '_blank'
+                    ]
+                );
             }
         },
     ],
-    /*
-    [
-        'attribute' => 'userPhone',
-        'value' => function ($model) {
-            if(isset($model->user)) {
-                return $model->user->phone;
-            }
-        },
-        'headerOptions' => ['width' => '150'],
-    ],
-    */
     [
         'attribute' => 'record',
         'format' =>  [
@@ -91,8 +73,20 @@ $gridColumns = [
         },
         'headerOptions' => ['width' => '150'],
     ],
+    [
+        'attribute' => 'created',
+        'format' =>  [
+            'time', 'dd.MM.Y HH:mm'
+        ],
+        'value' => function($model) {
+            Yii::$app->formatter->timeZone = 'Asia/Irkutsk';
+            return $model->created;
+        },
+        'headerOptions' => ['width' => '150'],
+        'visible' => false,
+    ],
 
-    ['class' => 'yii\grid\ActionColumn',
+    ['class' => 'kartik\grid\ActionColumn',
         'template' => '{view}  {link}  {delete}',
         'buttons' => [
             'view' => function ($url, $model) {
@@ -143,15 +137,25 @@ $gridColumns = [
     <?= ExportMenu::widget([
         'dataProvider' => $dataProvider,
         'columns' => $gridColumns,
+        'pjax' => true,
+        'columnSelectorOptions'=>[
+            'visible' => false,
+        ],
         'dropdownOptions' => [
             'label' => 'Выгрузка в файл',
             'class' => 'btn btn-secondary'
-        ]
+        ],
+        'exportConfig' => [
+            ExportMenu::FORMAT_HTML => false,
+            ExportMenu::FORMAT_TEXT => false,
+        ],
     ]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'columns' => $gridColumns,
+        'pjax' => true,
         'tableOptions' => [
             'class' => 'table table-striped table-bordered'
         ],
@@ -161,7 +165,6 @@ $gridColumns = [
             } else {
                 return ['class' => 'danger'];
             }
-        },
-        'columns' => $gridColumns,
+        },        
     ]); ?>
 </div>
