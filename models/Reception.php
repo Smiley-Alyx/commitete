@@ -191,15 +191,16 @@ class Reception extends \yii\db\ActiveRecord
         $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
         
         $msg  = "<html><body style='font-family:Arial,sans-serif;'>";
-        $msg .= "<h2 style='font-weight:bold;border-bottom:1px dotted #ccc;'>Запись в дошкольный отдел Комитета по образованию</h2>\r\n";
-        $msg .= "<p>Добрый день! ".$receptionDate." в ".$receptionTime." у Вас назначен приём в дошкольный отдел Комитета по образованию</p>\r\n";
-        $msg .= "<p><strong>Номер записи: </strong> ".$receptionNumber."</p>\r\n";
-        $msg .= "<p><strong>Дата: </strong> ".$receptionDate."</p>\r\n";
-        $msg .= "<p><strong>Время: </strong> ".$receptionTime."</p>\r\n";
-        $msg .= "<p><strong>Оператор: </strong> ".$receptionOperator."</p>\r\n";
-        $msg .= "<p><strong>Посетитель: </strong> ".$receptionUser."</p>\r\n";
-        $msg .= "<p><strong>Телефон: </strong> ".$receptionUserPhone."</p>\r\n";
-        $msg .= "<p>Данное письмо сгенгерировано автоматической системой, отвечать на него не нужно.</p>\r\n";
+        $msg .= "<p style='border-bottom:1px dotted #ccc;'>ЗАПИСЬ В ДОШКОЛЬНЫЙ ОТДЕЛ КОМИТЕТА ПО ОБРАЗОВАНИЮ</p>\r\n";
+        $msg .= "<p>Уважаемый ".$receptionUser.", ".$receptionDate." в ".$receptionTime." Вы записаны на приём в дошкольный отдел Комитета по образованию:</p>\r\n";
+        $msg .= "<p>Номер записи: ".$receptionNumber."</p>\r\n";
+        $msg .= "<p>Дата: ".$receptionDate."</p>\r\n";
+        $msg .= "<p>Время: ".$receptionTime."</p>\r\n";
+        $msg .= "<p>На приём при себе иметь следующие документы:</p>\r\n";
+		$msg .= "<p>- свидетельство о рождении;</p>\r\n";
+		$msg .= "<p>- паспорт родителя (законного представителя) ребёнка;</p>\r\n";
+		$msg .= "<p>- свидетельство о регистрации ребёнка по месту жительства в г. Улан-Удэ;</p>\r\n";
+		$msg .= "<p>- документ, подтверждающий льготную категорию (при наличии).</p>\r\n";
         $msg .= "</body></html>";
         
         @mail($sendto, $subject, $msg, $headers);

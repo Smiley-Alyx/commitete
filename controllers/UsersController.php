@@ -40,6 +40,9 @@ class UsersController extends Controller
      */
     public function actionIndex()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['/site/login']);
+        }
         $searchModel = new UsersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -70,10 +73,16 @@ class UsersController extends Controller
     public function actionCreate()
     {
         $model = new Users();
+        $currentDate = date('Y-m-d');
         $request = Yii::$app->request;
         $id = $request->get('id');
         $receptionData = $model->getReceptionData($id);
         $arrayUser = $request->post('Users');
+
+        if($receptionData['date'] < $currentDate) {
+            \Yii::$app->session->addFlash('danger', 'Ошибка! Нельзя создавать записи на прошедшие даты!');
+            return $this->redirect('/reception');
+        }
         if ($model->load(Yii::$app->request->post()) && isset($id)) {
             $checkUser = $model->checkUser($arrayUser);
             if($checkUser) {

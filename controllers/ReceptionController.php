@@ -38,6 +38,9 @@ class ReceptionController extends Controller
      */    
     public function actionIndex()
     {
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['/site/login']);
+        }
         $currentDate = date('Y-m-d');
         $queryParams = Yii::$app->request->queryParams;
         /*

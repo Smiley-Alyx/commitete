@@ -41,7 +41,6 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Посетители', 'url' => ['/users']],
             ['label' => 'Список записей', 'url' => ['/reception']],
-            /*
             Yii::$app->user->isGuest ? (
                 ['label' => 'Войти', 'url' => ['/site/login']]
             ) : (
@@ -54,7 +53,6 @@ AppAsset::register($this);
                 . Html::endForm()
                 . '</li>'
             )
-            */
         ],
     ]);
     NavBar::end();
@@ -71,7 +69,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; УИиИР <?= date('Y') ?></p>
+        <p class="pull-left">&copy; УИиИР 2018 - <?= date('Y') ?></p>
     </div>
 </footer>
 
