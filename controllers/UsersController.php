@@ -40,9 +40,6 @@ class UsersController extends Controller
      */
     public function actionIndex()
     {
-        if (Yii::$app->user->isGuest) {
-            return $this->redirect(['/site/login']);
-        }
         $searchModel = new UsersSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -79,7 +76,7 @@ class UsersController extends Controller
         $receptionData = $model->getReceptionData($id);
         $arrayUser = $request->post('Users');
 
-        if($receptionData['date'] < $currentDate) {
+        if($receptionData['date'] <= $currentDate) {
             \Yii::$app->session->addFlash('danger', 'Ошибка! Нельзя создавать записи на прошедшие даты!');
             return $this->redirect('/reception');
         }
@@ -91,13 +88,18 @@ class UsersController extends Controller
                 $model->save();
                 $idUser = $model->id;
             }
-            Reception::addUser($id, $idUser);
-            if($arrayUser['email']) {
-                Reception::sendMail($id, $arrayUser);
-            }            
-            return $this->redirect('/reception/view?id='.$id);
+            if(Reception::addUser($id, $idUser)) {
+                if($arrayUser['email']) {
+                    Reception::sendMail($id, $arrayUser);
+                }            
+                return $this->redirect('/reception/view?id='.$id);
+            } 
+            else {
+                \Yii::$app->session->addFlash('danger', 'Ошибка! Запись уже занята!!!');
+                return $this->redirect('/reception');
+            }
         }
-        return $this->render('create', ['model' => $model, 'receptionData' => $receptionData]);
+        return $this->render('create', ['model' => $model, 'receptionData' => date("d.m.Y", strtotime($receptionData))]);
     }
 
     /**

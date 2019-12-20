@@ -107,7 +107,7 @@ class ReceptionSearch extends Reception
         // grid filtering conditions
         $query->andFilterWhere([
             'time_id' => $this->time_id,
-            'date' => $this->date,
+            'date' => date("Y-m-d", strtotime($this->date)),
             'status_id' => $this->status_id,
             'operator_id' => $this->operator_id,
             'user_id' => $this->user_id,

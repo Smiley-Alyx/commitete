@@ -10,8 +10,8 @@ require_once('Time.php');
 $users = new Users();
 $reception = new Reception();
 $time = new Time();
-$date = date("Y-m-d", strtotime("tomorrow"));
-//$date = "2018-12-20";
+//$date = date("Y-m-d", strtotime("tomorrow"));
+$date = "2018-12-20";
 $data_reception = $reception->selectReceptionUser($date);
 ?>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
@@ -24,11 +24,15 @@ $data_reception = $reception->selectReceptionUser($date);
             $receptionDate = date("d.m.Y", strtotime($key['date']));
             $receptionTime = $time->selectTime($key['time_id']);
             $receptionOperator = $key['operator_id'];
-            $receptionUser = $userData['last_name'].' '.$userData['first_name'].' '.$userData['middle_name'];
+            //$receptionUser = $userData['last_name'].' '.$userData['first_name'].' '.$userData['middle_name'];
+            $receptionUser = $userData['last_name'].' '.$userData['first_name'];
+            if($userData['middle_name']) {
+                $receptionUser.=' '.$userData['middle_name'];
+            }
             $receptionUserPhone = $userData['phone'];
             
             $subject  = "Запись в дошкольный отдел Комитета по образованию";
-            $headers  = "From: " . strip_tags('info@roditeli.ulan-ude-eg.ru') . "\r\n";
+            $headers  = "From: " . strip_tags('sendmail@ulan-ude-eg.ru') . "\r\n";
             $headers .= "Reply-To: ". strip_tags($sendto) . "\r\n";
             $headers .= "MIME-Version: 1.0\r\n";
             $headers .= "Content-Type: text/html;charset=utf-8 \r\n";
@@ -43,7 +47,8 @@ $data_reception = $reception->selectReceptionUser($date);
 			$msg .= "<p>- свидетельство о рождении;</p>\r\n";
 			$msg .= "<p>- паспорт родителя (законного представителя) ребёнка;</p>\r\n";
 			$msg .= "<p>- свидетельство о регистрации ребёнка по месту жительства в г. Улан-Удэ;</p>\r\n";
-			$msg .= "<p>- документ, подтверждающий льготную категорию (при наличии).</p>\r\n";
+			$msg .= "<p>- документ, подтверждающий льготную категорию (при наличии).</p><br>\r\n";
+            $msg .= "<p>Данное письмо сгенерировано автоматически, отвечать на него не нужно.</p>\r\n";
 			$msg .= "</body></html>";
             
             // отправка сообщения
@@ -54,6 +59,7 @@ $data_reception = $reception->selectReceptionUser($date);
             else {
                 echo "Возникла ошибка при отправке формы. Попробуйте еще раз<br>";
             }
+            echo $sendto.'<br>';
             echo $msg.'<br>';
         }
     ?>

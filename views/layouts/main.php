@@ -39,8 +39,10 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
+            ['label' => 'Управление датами', 'url' => ['/reception/management']],
             ['label' => 'Посетители', 'url' => ['/users']],
             ['label' => 'Список записей', 'url' => ['/reception']],
+            /*
             Yii::$app->user->isGuest ? (
                 ['label' => 'Войти', 'url' => ['/site/login']]
             ) : (
@@ -53,6 +55,7 @@ AppAsset::register($this);
                 . Html::endForm()
                 . '</li>'
             )
+            */
         ],
     ]);
     NavBar::end();
@@ -69,7 +72,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; УИиИР 2018 - <?= date('Y') ?></p>
+        <p class="pull-left">&copy; УИиИР <?= date('Y') ?></p>
     </div>
 </footer>
 
