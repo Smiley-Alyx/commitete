@@ -7,7 +7,7 @@ use kartik\date\DatePicker;
 
 /* @var $this yii\web\View */
 
-$this->title = 'Планирование времени';
+$this->title = 'Удаление записей';
 $this->params['breadcrumbs'][] = ['label' => 'Список записей', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -17,9 +17,8 @@ $this->params['breadcrumbs'][] = $this->title;
     	<h1><?= Html::encode($this->title) ?></h1>
 	
     	<?php $form = ActiveForm::begin(); ?>
-    	
         <div class="calendar-form col-md-6">
-            <label>Планируемая дата</label>
+            <label>Удаляемая дата</label>
             <?= DatePicker::widget([
                 'options' => ['placeholder' => 'Выберете необходимую дату'],
                 'name' => 'Reception[datePlan]',
@@ -35,20 +34,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
     	<div class="col-md-4">
     		<?= $form->field($model, 'operatorPlan')->dropDownList([
-    			'1' => 'Один',
-    			'2' => 'Два', 
-    			'3' => 'Три'
+                '0' => 'Весь день',
+    			'1' => 'Первый',
+    			'2' => 'Второй', 
+    			'3' => 'Третий'
     		], 
     		[
     			'options' => [
-    				'2' => ['Selected' => true]
+    				'3' => ['Selected' => true]
     			]
     		]
     	); ?>
     	</div>
     </div> 	
 	<div class="container">
-		<?= Html::submitButton('Запланировать', ['class' => 'btn btn-primary']); ?>
+		<?= Html::submitButton('Удалить', 
+        [
+            'class' => 'btn btn-danger'
+        ]); ?>
 	</div>
 
 	<?php ActiveForm::end(); ?>

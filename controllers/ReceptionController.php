@@ -35,17 +35,25 @@ class ReceptionController extends Controller
     /**
      * Lists all Reception models.
      * @return mixed
-     */
+     */    
     public function actionIndex()
     {
-        $searchModel = new ReceptionSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $currentDate = date('Y-m-d');
+        $queryParams = Yii::$app->request->queryParams;
+        if (!$queryParams) {
+            $queryParams['ReceptionSearch']['date'] = $currentDate;
+        }
+        //var_dump($queryParams);
 
+        $searchModel = new ReceptionSearch();
+        $dataProvider = $searchModel->search($queryParams);
+        //ReceptionSearch[date]=2018-11-13
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
+    
 
     /**
      * Displays a single Reception model.
@@ -107,13 +115,9 @@ class ReceptionController extends Controller
      */
     public function actionDelete($id)
     {
-        //$this->findModel($id)->delete();
-        Yii::$app->db->createCommand(
-            'UPDATE `reception` SET `status_id` = :statusId, `user_id` = :userId WHERE `id` = :Id', 
-            ['statusId' => 1, ':userId' => '', ':Id' => $id])->execute();
-        //UsersController::actionDelete($id);
-        //Ебануть удаление пользователя из БД
-        return $this->redirect(['index']);
+        $model = new Reception();
+        $model->deleteUser($id);
+        return $this->redirect(['index', 'ReceptionSearch[date]' => Yii::$app->request->get('ReceptionSearch')['date']]);
     }
 
     /**
@@ -123,15 +127,36 @@ class ReceptionController extends Controller
     public function actionTime()
     {
         $model = new Reception();
-        $time = new Time();
         $countTime = Time::find()->count();
         if ($model->load(Yii::$app->request->post())) {
             $operatorPlan = Yii::$app->request->post('Reception')['operatorPlan'];
             $datePlan = Yii::$app->request->post('Reception')['datePlan'];
-            $model->saveTime($operatorPlan, $datePlan, $countTime);
+            if($model->saveTime($operatorPlan, $datePlan, $countTime)) {
+                return $this->redirect(['index', 'ReceptionSearch[date]' => $datePlan]);
+            } else {
+                \Yii::$app->session->addFlash('danger', 'Ошибка ввода даты');
+                return $this->render('time', ['model' => $model]);
+            }
+        } else {
+            return $this->render('time', ['model' => $model]);
+        }
+    }
+
+    /**
+     * Remove all time.
+     * @return mixed
+     */
+    public function actionRemove()
+    {
+        $model = new Reception();
+        $countTime = Time::find()->count();
+        if ($model->load(Yii::$app->request->post())) {
+            $operatorPlan = Yii::$app->request->post('Reception')['operatorPlan'];
+            $datePlan = Yii::$app->request->post('Reception')['datePlan'];
+            $model->removeTime($operatorPlan, $datePlan);
             return $this->redirect(['index']);
         }     
-        return $this->render('time', ['model' => $model]);
+        return $this->render('remove', ['model' => $model]);
     }
 
     /**

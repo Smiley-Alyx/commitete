@@ -30,7 +30,7 @@ class Users extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['first_name', 'middle_name', 'last_name', 'phone', 'email'], 'required'],
+            [['first_name', 'middle_name', 'last_name'], 'required'],
             [['first_name', 'middle_name', 'last_name', 'phone', 'email'], 'string', 'max' => 255],
         ];
     }
@@ -48,5 +48,20 @@ class Users extends \yii\db\ActiveRecord
             'phone' => 'Телефон',
             'email' => 'Электронная почта',
         ];
+    }
+
+    public function checkUser($arrayUser)
+    {
+        $find = Users::findOne([
+            'first_name' => $arrayUser['first_name'],
+            'middle_name' => $arrayUser['middle_name'],
+            'last_name' => $arrayUser['last_name'],
+            'phone' => $arrayUser['phone'],
+        ]);
+        if($find) {
+            return $find->id;
+        } else {
+            return false;
+        }
     }
 }

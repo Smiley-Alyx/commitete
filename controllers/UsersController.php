@@ -8,6 +8,10 @@ use app\models\UsersSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\behaviors\TimestampBehavior;
+use yii\db\Expression;
+use app\models\Reception;
+use app\models\Time;
 
 /**
  * UsersController implements the CRUD actions for Users model.
@@ -52,9 +56,16 @@ class UsersController extends Controller
      */
     public function actionView($id)
     {
+        $userData = Reception::find()->where(['user_id' => $id])->all();
+        //$userTime = Time::find()->where(['id' => $userData->id])->all();
+        //var_dump($userTime);
+
         return $this->render('view', [
             'model' => $this->findModel($id),
+            //'reception' => $userData,
+            //'time' => $userTime,
         ]);
+
     }
 
     /**
@@ -67,18 +78,23 @@ class UsersController extends Controller
         $model = new Users();
         $request = Yii::$app->request;
         $id = $request->get('id');
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            //Запилить проверку на существование id в get
-            Yii::$app->db->createCommand(
-                'UPDATE `reception` SET `status_id` = :statusId, `user_id` = :userId WHERE `id` = :Id', 
-                ['statusId' => 2, ':userId' => $model->id, ':Id' => $id])->execute();
-            //return $this->redirect(['view', 'id' => $model->id]);
-            return $this->redirect('/reception');
+        $arrayUser = $request->post('Users');
+        if ($model->load(Yii::$app->request->post()) && isset($id)) {
+            $checkUser = $model->checkUser($arrayUser);
+            if($checkUser) {
+                $idUser = $checkUser;
+            } else {
+                $model->save();
+                $idUser = $model->id;
+            }
+            Reception::addUser($id, $idUser);
+            if($arrayUser['email']) {
+                Reception::sendMail($id, $arrayUser);
+            }            
+            //var_dump(Yii::$app->request->get('ReceptionSearch')['date']);
+            return $this->redirect('/reception?ReceptionSearch[date]='.Yii::$app->request->get('ReceptionSearch')['date']);
         }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
+        return $this->render('create', ['model' => $model]);
     }
 
     /**

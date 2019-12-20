@@ -113,3 +113,13 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+.reception-search {
+    width: 30%;
+
+}
+
+.calendar-form {
+    width:320px;
+    margin-bottom: 10px;
+}
