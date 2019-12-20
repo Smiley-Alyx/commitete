@@ -5,12 +5,12 @@ namespace app\models;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use app\models\Reception;
+use app\models\Users;
 
 /**
- * ReceptionSearch represents the model behind the search form of `app\models\Reception`.
+ * UsersSearch represents the model behind the search form of `app\models\Users`.
  */
-class ReceptionSearch extends Reception
+class UsersSearch extends Users
 {
     /**
      * @inheritdoc
@@ -18,8 +18,8 @@ class ReceptionSearch extends Reception
     public function rules()
     {
         return [
-            [['id', 'time_id', 'status_id', 'operator_id', 'user_id'], 'integer'],
-            [['date'], 'safe'],
+            [['id'], 'integer'],
+            [['first_name', 'middle_name', 'last_name', 'phone', 'email'], 'safe'],
         ];
     }
 
@@ -41,7 +41,7 @@ class ReceptionSearch extends Reception
      */
     public function search($params)
     {
-        $query = Reception::find();
+        $query = Users::find();
 
         // add conditions that should always apply here
 
@@ -60,12 +60,13 @@ class ReceptionSearch extends Reception
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'time_id' => $this->time_id,
-            'date' => $this->date,
-            'status_id' => $this->status_id,
-            'operator_id' => $this->operator_id,
-            'user_id' => $this->user_id,
         ]);
+
+        $query->andFilterWhere(['like', 'first_name', $this->first_name])
+            ->andFilterWhere(['like', 'middle_name', $this->middle_name])
+            ->andFilterWhere(['like', 'last_name', $this->last_name])
+            ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'email', $this->email]);
 
         return $dataProvider;
     }
