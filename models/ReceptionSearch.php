@@ -13,6 +13,7 @@ use app\models\Users;
  */
 class ReceptionSearch extends Reception
 {
+    public $reception_id;
     public $timeReal;
     public $userNameReal;
     public $userPhone;
@@ -24,8 +25,8 @@ class ReceptionSearch extends Reception
     public function rules()
     {
         return [
-            [['id', 'time_id', 'status_id', 'operator_id', 'user_id'], 'integer'],
-            [['date', 'record', 'timeReal', 'userNameReal', 'userPhone', 'userEmail'], 'safe'],
+            [['id', 'reception_id', 'time_id', 'status_id', 'operator_id', 'user_id'], 'integer'],
+            [['date', 'record', 'created', 'timeReal', 'userNameReal', 'userPhone', 'userEmail'], 'safe'],
         ];
     }
 
@@ -60,6 +61,11 @@ class ReceptionSearch extends Reception
             ],
         ]);
 
+        $dataProvider->sort->attributes['reception_id'] = [
+            'asc' => [Reception::tableName().'.id' => SORT_ASC],
+            'desc' => [Reception::tableName().'.id' => SORT_DESC],
+        ];
+
         $dataProvider->sort->attributes['userPhone'] = [
             'asc' => [Users::tableName().'.phone' => SORT_ASC],
             'desc' => [Users::tableName().'.phone' => SORT_DESC],
@@ -71,8 +77,18 @@ class ReceptionSearch extends Reception
         ];
 
         $dataProvider->sort->attributes['userNameReal'] = [
-            'asc' => [Users::tableName().'.last_name' => SORT_ASC],
-            'desc' => [Users::tableName().'.last_name' => SORT_DESC],
+            'asc' => 
+                [
+                    Users::tableName().'.last_name' => SORT_ASC,
+                    Users::tableName().'.first_name' => SORT_ASC,
+                    Users::tableName().'.middle_name' => SORT_ASC
+                ],
+            'desc' => 
+                [
+                    Users::tableName().'.last_name' => SORT_DESC,
+                    Users::tableName().'.first_name' => SORT_DESC,
+                    Users::tableName().'.middle_name' => SORT_DESC
+                ],
         ];
 
         $dataProvider->sort->attributes['timeReal'] = [
@@ -90,20 +106,27 @@ class ReceptionSearch extends Reception
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
             'time_id' => $this->time_id,
-            'date' => $this->date,
+            'date' => date("Y-m-d", strtotime($this->date)),
             'status_id' => $this->status_id,
             'operator_id' => $this->operator_id,
             'user_id' => $this->user_id,
+            'record' => $this->record,
+            'created' => $this->created,
+        ])
+        ->andFilterWhere(['like', 
+            Reception::tableName().'.id', 
+            $this->reception_id,
         ])
         ->andFilterWhere(['like', 
             Time::tableName().'.time', 
             $this->timeReal,
         ])
-        ->andFilterWhere(['like', 
-            Users::tableName().'.last_name', 
-            $this->userNameReal,
+        ->andFilterWhere([
+            'or', 
+            ['like', Users::tableName().'.last_name', $this->userNameReal],
+            ['like', Users::tableName().'.first_name', $this->userNameReal],
+            ['like', Users::tableName().'.middle_name', $this->userNameReal],
         ])
         ->andFilterWhere(['like', 
             Users::tableName().'.phone', 
